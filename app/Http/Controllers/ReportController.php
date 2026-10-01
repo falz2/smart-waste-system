@@ -9,7 +9,12 @@ class ReportController extends Controller
 {
     public function index()
     {
-        $reports = Report::with('user', 'bin')->latest()->paginate(10);
+        $query = Report::with('user', 'bin')->latest();
+        if (! request()->user()->isAdmin()) {
+            $query->where('user_id', request()->user()->id);
+        }
+
+        $reports = $query->paginate(10);
         return view('reports.index', compact('reports'));
     }
 
@@ -37,13 +42,17 @@ class ReportController extends Controller
         return redirect()->route('reports.index')->with('success', 'Report submitted successfully');
     }
 
-    public function show(Report $report)
+    public function show(Report $report, Request $request)
     {
+        abort_unless($request->user()->isAdmin() || $report->user_id === $request->user()->id, 403);
+
         return view('reports.show', compact('report'));
     }
 
     public function updateStatus(Request $request, Report $report)
     {
+        abort_unless($request->user()->isAdmin(), 403);
+
         $request->validate([
             'status' => 'required|in:pending,in_progress,resolved',
         ]);
@@ -53,8 +62,10 @@ class ReportController extends Controller
         return redirect()->back()->with('success', 'Report status updated');
     }
 
-    public function destroy(Report $report)
+    public function destroy(Report $report, Request $request)
     {
+        abort_unless($request->user()->isAdmin(), 403);
+
         $report->delete();
         return redirect()->route('reports.index')->with('success', 'Report deleted');
     }

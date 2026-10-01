@@ -4,16 +4,17 @@
    CUSTOM THEME COLORS (Tailwind v4 way)
    ============================================ */
 @theme {
-  --color-primary-50: #eff6ff;
-  --color-primary-100: #dbeafe;
-  --color-primary-200: #bfdbfe;
-  --color-primary-300: #93c5fd;
-  --color-primary-400: #60a5fa;
-  --color-primary-500: #3b82f6;
-  --color-primary-600: #2563eb;
-  --color-primary-700: #1d4ed8;
-  --color-primary-800: #1e40af;
-  --color-primary-900: #1e3a8a;
+  --font-sans: "DM Sans", "Segoe UI", sans-serif;
+  --color-primary-50: #edf7f1;
+  --color-primary-100: #d4ecdc;
+  --color-primary-200: #add9bf;
+  --color-primary-300: #7fc69c;
+  --color-primary-400: #4eae77;
+  --color-primary-500: #278e58;
+  --color-primary-600: #197347;
+  --color-primary-700: #155b3b;
+  --color-primary-800: #124a33;
+  --color-primary-900: #103d2c;
 }
 
 /* ============================================
@@ -21,7 +22,7 @@
    ============================================ */
 @layer base {
   body {
-    @apply bg-gray-100 font-sans antialiased text-gray-800;
+    @apply bg-[#f3f5f1] font-sans antialiased text-gray-800;
   }
 
   ::-webkit-scrollbar {
@@ -47,51 +48,51 @@
   /* ---------- Buttons ---------- */
   .btn-primary {
     @apply inline-flex items-center justify-center bg-primary-600 hover:bg-primary-700
-           text-white font-semibold py-2 px-4 rounded-lg transition duration-200
+           text-white font-semibold py-2 px-4 rounded-md transition duration-200
            focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
   }
 
   .btn-secondary {
     @apply inline-flex items-center justify-center bg-gray-500 hover:bg-gray-600
-           text-white font-semibold py-2 px-4 rounded-lg transition duration-200
+           text-white font-semibold py-2 px-4 rounded-md transition duration-200
            focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2;
   }
 
   .btn-danger {
     @apply inline-flex items-center justify-center bg-red-600 hover:bg-red-700
-           text-white font-semibold py-2 px-4 rounded-lg transition duration-200
+           text-white font-semibold py-2 px-4 rounded-md transition duration-200
            focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2;
   }
 
   .btn-success {
     @apply inline-flex items-center justify-center bg-green-600 hover:bg-green-700
-           text-white font-semibold py-2 px-4 rounded-lg transition duration-200
+           text-white font-semibold py-2 px-4 rounded-md transition duration-200
            focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2;
   }
 
   .btn-warning {
     @apply inline-flex items-center justify-center bg-yellow-500 hover:bg-yellow-600
-           text-white font-semibold py-2 px-4 rounded-lg transition duration-200
+           text-white font-semibold py-2 px-4 rounded-md transition duration-200
            focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2;
   }
 
   /* ---------- Cards ---------- */
   .card {
-    @apply bg-white rounded-xl shadow-md p-6;
+    @apply bg-white rounded-lg border border-[#e4e9e2] shadow-sm p-5 sm:p-6;
   }
 
   .card-hover {
-    @apply bg-white rounded-xl shadow-md p-6 transition transform hover:-translate-y-1 hover:shadow-lg duration-200;
+    @apply bg-white rounded-lg border border-[#e4e9e2] shadow-sm p-5 sm:p-6 transition transform hover:-translate-y-1 hover:shadow-lg duration-200;
   }
 
   .stat-card {
-    @apply rounded-xl shadow-md p-6 text-white transition transform hover:-translate-y-1 hover:shadow-xl duration-200;
+    @apply rounded-md border border-[#e4e9e2] bg-white p-4 text-gray-800;
   }
 
   /* ---------- Form Inputs ---------- */
   .input-field {
-    @apply w-full px-4 py-2 border border-gray-300 rounded-lg bg-white
-           focus:ring-2 focus:ring-primary-500 focus:border-transparent
+      @apply w-full px-3.5 py-2.5 border border-gray-300 rounded-md bg-white
+        focus:ring-2 focus:ring-primary-500 focus:border-primary-500
            outline-none transition duration-200;
   }
 
@@ -109,7 +110,7 @@
 
   /* ---------- Badges ---------- */
   .badge {
-    @apply inline-block px-3 py-1 rounded-full text-xs font-semibold;
+    @apply inline-block px-2.5 py-1 rounded-full text-xs font-semibold;
   }
 
   .badge-success {
@@ -134,12 +135,12 @@
 
   /* ---------- Sidebar ---------- */
   .sidebar-link {
-    @apply flex items-center gap-3 px-4 py-3 rounded-lg transition text-gray-300
+    @apply flex items-center gap-3 px-3 py-2.5 rounded-md transition text-gray-300
            hover:bg-gray-700 hover:text-white;
   }
 
   .sidebar-link-active {
-    @apply flex items-center gap-3 px-4 py-3 rounded-lg bg-primary-600 text-white;
+    @apply flex items-center gap-3 px-3 py-2.5 rounded-md bg-primary-600 text-white;
   }
 
   /* ---------- Table ---------- */
@@ -183,5 +184,31 @@
 
   .alert-warning {
     @apply p-4 rounded-lg mb-4 flex items-center justify-between border-l-4 bg-yellow-100 border-yellow-500 text-yellow-700;
+  }
+
+  .page-enter {
+    animation: page-enter 320ms ease-out both;
+  }
+
+  .auth-grid {
+    background-image: linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+
+  .auth-marker {
+    box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.12);
+  }
+}
+
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Bin;
 use App\Models\Collection;
+use App\Models\Report;
 use App\Models\Truck;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -61,7 +62,7 @@ class DemoWorkflowTest extends TestCase
             'status' => 'full',
         ]);
 
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => 'admin']);
         $this->actingAs($user)
             ->get(route('iot.simulate'))
             ->assertOk()
@@ -81,7 +82,7 @@ class DemoWorkflowTest extends TestCase
 
     public function test_collection_assignment_and_completion_updates_bin_and_truck(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => 'admin']);
         $collector = User::factory()->create(['role' => 'collector']);
         $bin = $this->createBin('BIN-003', 85);
         $truck = Truck::create([
@@ -130,6 +131,83 @@ class DemoWorkflowTest extends TestCase
             'status' => 'empty',
         ]);
         $this->assertSame('available', $truck->fresh()->status);
+    }
+
+    public function test_roles_see_their_own_workspace_and_cannot_cross_role_boundaries(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $resident = User::factory()->create(['role' => 'resident']);
+        $collector = User::factory()->create(['role' => 'collector']);
+        $otherCollector = User::factory()->create(['role' => 'collector']);
+        $bin = $this->createBin('BIN-010', 85);
+        $otherBin = $this->createBin('BIN-011', 90);
+
+        $residentReport = Report::create([
+            'user_id' => $resident->id,
+            'bin_id' => $bin->id,
+            'type' => 'damaged_bin',
+            'description' => 'Resident-owned report',
+            'status' => 'pending',
+        ]);
+        $otherReport = Report::create([
+            'user_id' => $otherCollector->id,
+            'bin_id' => $otherBin->id,
+            'type' => 'illegal_dumping',
+            'description' => 'Other account report',
+            'status' => 'pending',
+        ]);
+
+        $truck = Truck::create([
+            'plate_number' => 'UBG 456B',
+            'driver_name' => 'Demo Driver',
+            'driver_phone' => '0780000000',
+            'status' => 'available',
+        ]);
+        $ownCollection = Collection::create([
+            'bin_id' => $bin->id,
+            'truck_id' => $truck->id,
+            'collector_id' => $collector->id,
+            'status' => 'assigned',
+        ]);
+        $otherCollection = Collection::create([
+            'bin_id' => $otherBin->id,
+            'truck_id' => $truck->id,
+            'collector_id' => $otherCollector->id,
+            'status' => 'assigned',
+        ]);
+
+        $this->actingAs($resident)
+            ->get(route('dashboard'))
+            ->assertOk()
+            ->assertSee('My reports');
+        $this->actingAs($resident)
+            ->get(route('reports.index'))
+            ->assertOk()
+            ->assertSee('Damaged bin')
+            ->assertDontSee('Illegal dumping');
+        $this->actingAs($resident)->get(route('bins.index'))->assertForbidden();
+        $this->actingAs($resident)->get(route('reports.show', $otherReport))->assertForbidden();
+
+        $this->actingAs($collector)
+            ->get(route('dashboard'))
+            ->assertOk()
+            ->assertSee('Assigned pickups')
+            ->assertSee($bin->bin_code)
+            ->assertDontSee($otherBin->bin_code);
+        $this->actingAs($collector)
+            ->get(route('collections.index'))
+            ->assertOk()
+            ->assertSee($bin->bin_code)
+            ->assertDontSee($otherBin->bin_code);
+        $this->actingAs($collector)->get(route('collections.show', $otherCollection))->assertForbidden();
+        $this->actingAs($collector)->get(route('iot.simulate'))->assertForbidden();
+
+        $this->actingAs($admin)
+            ->get(route('dashboard'))
+            ->assertOk()
+            ->assertSee('Kampala operations');
+        $this->actingAs($admin)->get(route('reports.show', $residentReport))->assertOk();
+        $this->assertSame($collector->id, $ownCollection->fresh()->collector_id);
     }
 
     private function createBin(string $code, int $fillLevel): Bin

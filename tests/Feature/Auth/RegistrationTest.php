@@ -21,11 +21,20 @@ class RegistrationTest extends TestCase
         $response = $this->post('/register', [
             'name' => 'Test User',
             'email' => 'test@example.com',
+            'phone' => '0700000000',
+            'address' => 'Wandegeya, Kampala',
+            'role' => 'admin',
             'password' => 'password',
             'password_confirmation' => 'password',
         ]);
 
         $this->assertAuthenticated();
+        $this->assertDatabaseHas('users', [
+            'email' => 'test@example.com',
+            'phone' => '0700000000',
+            'address' => 'Wandegeya, Kampala',
+            'role' => 'resident',
+        ]);
         $response->assertRedirect(route('dashboard', absolute: false));
     }
 }

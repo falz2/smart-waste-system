@@ -12,7 +12,12 @@ class CollectionController extends Controller
 {
     public function index()
     {
-        $collections = Collection::with('bin', 'truck', 'collector')->latest()->paginate(10);
+        $query = Collection::with('bin', 'truck', 'collector')->latest();
+        if (request()->user()->isCollector()) {
+            $query->where('collector_id', request()->user()->id);
+        }
+
+        $collections = $query->paginate(10);
         return view('collections.index', compact('collections'));
     }
 
@@ -40,14 +45,17 @@ class CollectionController extends Controller
         return redirect()->route('collections.index')->with('success', 'Collection assigned');
     }
 
-    public function show(Collection $collection)
+    public function show(Collection $collection, Request $request)
     {
+        $this->ensureCanAccess($collection, $request);
         $collection->load('bin', 'truck', 'collector');
         return view('collections.show', compact('collection'));
     }
 
-    public function complete(Collection $collection)
+    public function complete(Collection $collection, Request $request)
     {
+        $this->ensureCanAccess($collection, $request);
+
         $collection->update([
             'status' => 'completed',
             'collected_at' => now(),
@@ -73,5 +81,11 @@ class CollectionController extends Controller
     {
         $collection->delete();
         return redirect()->route('collections.index')->with('success', 'Collection deleted');
+    }
+
+    private function ensureCanAccess(Collection $collection, Request $request): void
+    {
+        $user = $request->user();
+        abort_unless($user->isAdmin() || ($user->isCollector() && $collection->collector_id === $user->id), 403);
     }
 }

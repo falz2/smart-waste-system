@@ -1,13 +1,13 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Citizen Reports')
+@section('title', Auth::user()->isAdmin() ? 'Reports' : 'My reports')
 
 @section('content')
 
-<div class="flex justify-between items-center mb-6">
-    <p class="text-gray-600">Citizen-submitted reports for waste issues</p>
-    <a href="{{ route('reports.create') }}" class="btn-primary">
-        <i class="fas fa-plus mr-2"></i> New Report
+<div class="mb-5 flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+    <p class="text-sm text-gray-500">{{ $reports->total() }} reports</p>
+    <a href="{{ route('reports.create') }}" class="btn-primary shrink-0">
+        <i class="fas fa-plus mr-2" aria-hidden="true"></i> New report
     </a>
 </div>
 

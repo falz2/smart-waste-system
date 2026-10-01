@@ -4,10 +4,10 @@
 
 @section('content')
 
-<div class="flex justify-between items-center mb-6">
-    <p class="text-gray-600">Manage all waste bins across Kampala</p>
-    <a href="{{ route('bins.create') }}" class="btn-primary">
-        <i class="fas fa-plus mr-2"></i> Add New Bin
+<div class="mb-5 flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+    <p class="text-sm text-gray-500">{{ $bins->total() }} bins</p>
+    <a href="{{ route('bins.create') }}" class="btn-primary shrink-0">
+        <i class="fas fa-plus mr-2" aria-hidden="true"></i> Add bin
     </a>
 </div>
 
