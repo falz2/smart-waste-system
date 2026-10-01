@@ -18,10 +18,10 @@
 
     <aside class="w-64 bg-gradient-to-b from-gray-900 to-gray-800 text-white flex flex-col">
         <div class="p-6 border-b border-gray-700">
-            <h1 class="text-xl font-bold flex items-center gap-2">
+            <a href="{{ route('dashboard') }}" class="text-xl font-bold flex items-center gap-2">
                 <i class="fas fa-trash-alt text-green-400"></i>
                 Smart Waste
-            </h1>
+            </a>
             <p class="text-xs text-gray-400 mt-1">Kampala City</p>
         </div>
 
@@ -66,6 +66,12 @@
                class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ request()->routeIs('map') ? 'bg-primary-600 text-white' : 'hover:bg-gray-700 text-gray-300' }}">
                 <i class="fas fa-map-marked-alt w-5"></i>
                 <span>Map View</span>
+            </a>
+
+            <a href="{{ route('iot.simulate') }}"
+               class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ request()->routeIs('iot.*') ? 'bg-primary-600 text-white' : 'hover:bg-gray-700 text-gray-300' }}">
+                <i class="fas fa-microchip w-5"></i>
+                <span>IoT Simulator</span>
             </a>
         </nav>
 

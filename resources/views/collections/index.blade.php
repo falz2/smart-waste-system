@@ -47,15 +47,22 @@
                             <span class="badge {{ $badgeClass }}">{{ str_replace('_', ' ', $collection->status) }}</span>
                         </td>
                         <td class="py-3 px-4 text-right">
-                            @if($collection->status !== 'completed')
-                                <form action="{{ route('collections.complete', $collection) }}" method="POST" class="inline">
-                                    @csrf
-                                    @method('PATCH')
-                                    <button class="btn-success text-sm">
-                                        <i class="fas fa-check"></i> Complete
-                                    </button>
-                                </form>
-                            @endif
+                            <div class="flex justify-end items-center gap-2">
+                                <a href="{{ route('collections.show', $collection) }}"
+                                   class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition"
+                                   title="View collection" aria-label="View collection {{ $collection->id }}">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                @if($collection->status !== 'completed')
+                                    <form action="{{ route('collections.complete', $collection) }}" method="POST" class="inline">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button class="btn-success text-sm">
+                                            <i class="fas fa-check"></i> Complete
+                                        </button>
+                                    </form>
+                                @endif
+                            </div>
                         </td>
                     </tr>
                 @empty

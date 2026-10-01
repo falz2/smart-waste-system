@@ -34,7 +34,10 @@ class BinController extends Controller
 
     public function show(Bin $bin)
     {
-        $bin->load('reports', 'collections');
+        $bin->load([
+            'reports' => fn ($query) => $query->latest(),
+            'collections' => fn ($query) => $query->with('truck')->latest(),
+        ]);
         return view('bins.show', compact('bin'));
     }
 

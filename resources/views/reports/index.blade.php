@@ -4,6 +4,13 @@
 
 @section('content')
 
+<div class="flex justify-between items-center mb-6">
+    <p class="text-gray-600">Citizen-submitted reports for waste issues</p>
+    <a href="{{ route('reports.create') }}" class="btn-primary">
+        <i class="fas fa-plus mr-2"></i> New Report
+    </a>
+</div>
+
 <div class="card">
     <div class="overflow-x-auto">
         <table class="w-full">
